@@ -1,3 +1,3 @@
-from .jsondb import JsonDB
+from .jsontable import JsonTable
 
-__all__ = ["JsonDB"]
+__all__ = ["JsonTable"]
