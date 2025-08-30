@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath("../jsonlite")) # Just importing, no need for this
+sys.path.append(os.path.abspath("../jsonlite")) # Adjustment to find jsonlite package
 
 # -- Example -- #
 
@@ -15,6 +15,9 @@ class Usuario:
     email: str
     idade: int
     _id: Optional[int] = None # Only used to store the user ID after insertion, not needed (and not used) when creating a new user
+
+    def __repr__(self):
+        return f'User {self.nome} | ID: {self._id} | Email: {self.email} | Age: {self.idade}'
 
 # Create user table (with .json)
 user_table = JsonTable("examples/users.json", Usuario)
