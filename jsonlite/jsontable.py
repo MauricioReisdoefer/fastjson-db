@@ -32,8 +32,19 @@ class JsonTable:
         if not is_dataclass(model_cls):
             raise ValueError("model_cls must be a dataclass")
 
-        if not os.path.exists(self.path):
+        self._data_cache: List[Dict[str, Any]] = []
+        self._loaded = False
+
+        if os.path.exists(self.path):
+            self._load_cache()
+        else:
             self.save([])
+
+    def _load_cache(self):
+        """Load the JSON file into the in-memory cache."""
+        with open(self.path, "rb") as file:
+            self._data_cache = json_engine.loads(file.read())
+        self._loaded = True
 
     def load(self) -> List[Dict[str, Any]]:
         """
@@ -42,18 +53,25 @@ class JsonTable:
         Returns:
             List[Dict[str, Any]]: List of all records stored in the table.
         """
-        with open(self.path, "rb") as file:
-            return json_engine.loads(file.read())
+        if not self._loaded:
+            self._load_cache()
+        return self._data_cache
 
-    def save(self, data: List[Dict[str, Any]]):
+    def save(self, data: List[Dict[str, Any]] = None):
         """
         Saves a list of records (dictionaries) to the JSON file.
 
         Args:
-            data (List[Dict[str, Any]]): Records to save.
+            data (List[Dict[str, Any]], optional): Records to save. Defaults to None.
         """
+        if data is not None:
+            self._data_cache = data
         with open(self.path, "wb") as file:
-            file.write(json_engine.dumps(data))
+            file.write(json_engine.dumps(self._data_cache))
+
+    def flush(self):
+        """Writes the current in-memory cache to disk."""
+        self.save()
 
     def insert(self, obj: T) -> int:
         """
@@ -71,11 +89,9 @@ class JsonTable:
         if not isinstance(obj, self.model_cls):
             raise TypeError(f"Object must be of type {self.model_cls.__name__}")
 
-        data = self.load()
         record = asdict(obj)
-        record["_id"] = len(data) + 1
-        data.append(record)
-        self.save(data)
+        record["_id"] = len(self._data_cache) + 1
+        self._data_cache.append(record)
         obj._id = record["_id"]
         return obj._id
 
@@ -86,7 +102,7 @@ class JsonTable:
         Returns:
             List[T]: List of dataclass instances representing all records.
         """
-        return [self.model_cls(**record) for record in self.load()]
+        return [self.model_cls(**record) for record in self._data_cache]
 
     def get_by(self, key: str, value: Any) -> List[T]:
         """
@@ -99,7 +115,7 @@ class JsonTable:
         Returns:
             List[T]: List of dataclass instances that match the condition.
         """
-        return [self.model_cls(**record) for record in self.load() if record.get(key) == value]
+        return [self.model_cls(**record) for record in self._data_cache if record.get(key) == value]
 
     def delete(self, _id: int) -> bool:
         """
@@ -111,10 +127,9 @@ class JsonTable:
         Returns:
             bool: True if the record was deleted, False otherwise.
         """
-        data = self.load()
-        new_data = [record for record in data if record["_id"] != _id]
-        if len(new_data) != len(data):
-            self.save(new_data)
+        new_data = [record for record in self._data_cache if record["_id"] != _id]
+        if len(new_data) != len(self._data_cache):
+            self._data_cache = new_data
             return True
         return False
 
@@ -129,8 +144,8 @@ class JsonTable:
             List[int]: List of `_id`s assigned to the inserted objects.
         """
         ids = []
-        for object in objects:
-            ids.append(self.insert(object))
+        for obj in objects:
+            ids.append(self.insert(obj))
         return ids
 
     def update(self, _id: int, new_obj: T) -> bool:
@@ -150,13 +165,11 @@ class JsonTable:
         if not isinstance(new_obj, self.model_cls):
             raise TypeError(f"Object must be of type {self.model_cls.__name__}")
 
-        data = self.load()
-        for index, record in enumerate(data):
+        for index, record in enumerate(self._data_cache):
             if record["_id"] == _id:
                 updated_record = asdict(new_obj)
                 updated_record["_id"] = _id
-                data[index] = updated_record
-                self.save(data)
+                self._data_cache[index] = updated_record
                 return True
         return False
 
@@ -174,9 +187,7 @@ class JsonTable:
             TypeError: If any object in `updates` is not an instance of the table's dataclass.
         """
         count = 0
-        data = self.load()
-
-        for index, record in enumerate(data):
+        for index, record in enumerate(self._data_cache):
             _id = record.get("_id")
             if _id in updates:
                 new_obj = updates[_id]
@@ -184,8 +195,6 @@ class JsonTable:
                     raise TypeError(f"Object must be of type {self.model_cls.__name__}")
                 updated_record = asdict(new_obj)
                 updated_record["_id"] = _id
-                data[index] = updated_record
+                self._data_cache[index] = updated_record
                 count += 1
-
-        self.save(data)
         return count
