@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastjson-db"
+version = "0.1.0"
+description = "A lightweight JSON database with dataclass support."
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+  { name="Maurício Reisdoefer", email="mauricio.reisdoefer2009@gmail.com" }
+]
+dependencies = []
+requires-python = ">=3.9"
+
+[project.urls]
+"Homepage" = "https://github.com/MauricioReisdoefer/jsonlite"
+"Bug Tracker" = "https://github.com/MauricioReisdoefer/jsonlite/issues"
+
+[project.optional-dependencies]
+perf = ["orjson>=3.0"]
