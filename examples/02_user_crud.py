@@ -47,6 +47,6 @@ if users_to_delete:
     for u in user_table.get_all():
         print(u)
 
-# (Opcional) limpar arquivo após teste
+# (Optional, but for tests) Destroying table users.json
 if os.path.exists("examples/users.json"):
     os.remove("examples/users.json")
