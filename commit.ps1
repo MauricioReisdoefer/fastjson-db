@@ -4,7 +4,7 @@
 Clear-Host
 
 # Rodar o pytest
-pytest
+py -m pytest
 
 # Verificar se o pytest retornou sucesso
 if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 5) {

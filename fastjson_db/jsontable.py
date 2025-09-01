@@ -7,8 +7,8 @@ import os
 from dataclasses import asdict, is_dataclass
 from typing import Any, List, Type, TypeVar, Dict
 
-T = TypeVar("T")
-
+from fastjson_db.model import JsonModel
+T = TypeVar("T", bound="JsonModel")
 class JsonTable:
     """
     JsonTable works with dataclasses, ensuring that only objects of the correct type can be inserted.

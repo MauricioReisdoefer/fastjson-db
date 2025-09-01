@@ -1,9 +1,12 @@
 from dataclasses import dataclass, field
 from typing import Optional, TypeVar, Dict
-from fastjson_db import JsonTable
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from fastjson_db.jsontable import JsonTable
 
 T = TypeVar("T", bound="JsonModel")
-TABLE_REGISTRY: Dict[type, "JsonTable"] = {}
+TABLE_REGISTRY: Dict[T, "JsonTable"] = {}
 
 @dataclass
 class JsonModel:
