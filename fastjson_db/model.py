@@ -18,3 +18,4 @@ class JsonModel:
         cls = type(self)
         if self._table is None and cls in TABLE_REGISTRY:
             self._table = TABLE_REGISTRY[cls]
+        
