@@ -8,6 +8,7 @@ from fastjson_db import JsonModel, TABLE_REGISTRY
 # Classe de exemplo
 @dataclass
 class User(JsonModel):
+    _id: int = 0
     name: str = ""
     email: str = ""
 
@@ -25,5 +26,5 @@ def test_jsonmodel_inheritance_and_registry():
         u = User(name="Alice", email="alice@example.com")
 
         # verifica os atributos internos
-        assert u._id is None, "Novo objeto deve começar sem _id"
+        assert u._id is not None, "Novo objeto deve começar com _id"
         assert u._table is user_table, "_table deve ser ligado automaticamente pelo registry"

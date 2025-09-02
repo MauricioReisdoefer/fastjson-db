@@ -19,6 +19,7 @@ if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 5) {
     # Fazer commit
     git add .
     git commit -m "$commitMessage"
+    git push origin main
 
     Clear-Host
     Write-Host "----------------------------------"

@@ -102,7 +102,12 @@ class JsonTable:
         Returns:
             List[T]: List of dataclass instances representing all records.
         """
-        return [self.model_cls(**record) for record in self._data_cache]
+        clean_records = [
+            {k: v for k, v in record.items() if k != "_table"}
+            for record in self._data_cache
+        ]
+        
+        return [self.model_cls(**record) for record in clean_records]
 
     def get_by(self, key: str, value: Any) -> List[T]:
         """
@@ -115,7 +120,13 @@ class JsonTable:
         Returns:
             List[T]: List of dataclass instances that match the condition.
         """
-        return [self.model_cls(**record) for record in self._data_cache if record.get(key) == value]
+        clean_records = [
+            {k: v for k, v in record.items() if k != "_table"}
+            for record in self._data_cache
+            if record.get(key) == value
+        ]
+        
+        return [self.model_cls(**record) for record in clean_records if record.get(key) == value]
 
     def delete(self, _id: int) -> bool:
         """

@@ -1,11 +1,13 @@
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from fastjson_db import JsonModel, TABLE_REGISTRY, JsonTable
 from dataclasses import dataclass
 from typing import Optional
 
 @dataclass
 class User(JsonModel):
-    _id: Optional[int] = 0
-    _table: Optional[JsonTable]
+    _id: int = 0
     name: str = ""
     password: str = ""
     
