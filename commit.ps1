@@ -1,20 +1,22 @@
 # run_tests_and_commit.ps1
 
-# Limpar terminal
+# Resetar terminal
 Clear-Host
 
-# Rodar o pytest
+# Rodar pytest
+Write-Host "Rodando testes com pytest..." -ForegroundColor Cyan
 py -m pytest
 
-# Verificar se o pytest retornou sucesso
+# Verificar status do pytest
 if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 5) {
     Clear-Host
-    Write-Host "----------------------------------"
-    Write-Host "Todos os testes passaram!"
-    Write-Host "----------------------------------"
+    Write-Host "==================================" -ForegroundColor DarkGreen
+    Write-Host "    TODOS OS TESTES PASSARAM! " -ForegroundColor Green
+    Write-Host "==================================" -ForegroundColor DarkGreen
 
     # Pedir mensagem do commit
-    $commitMessage = Read-Host "Digite a mensagem do commit"
+    Write-Host ""
+    $commitMessage = Read-Host "Digite a mensagem do commit: "
 
     # Fazer commit
     git add .
@@ -22,12 +24,12 @@ if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 5) {
     git push origin main
 
     Clear-Host
-    Write-Host "----------------------------------"
-    Write-Host "Commit criado com sucesso!"
-    Write-Host "----------------------------------"
+    Write-Host "==================================" -ForegroundColor DarkCyan
+    Write-Host " 🚀 Commit enviado com sucesso! " -ForegroundColor Cyan
+    Write-Host "==================================" -ForegroundColor DarkCyan
 }
 else {
-    Write-Host "----------------------------------"
-    Write-Host "Testes falharam. Commit cancelado."
-    Write-Host "----------------------------------"
+    Write-Host "==================================" -ForegroundColor DarkRed
+    Write-Host " ❌ Testes falharam. Commit cancelado. " -ForegroundColor Red
+    Write-Host "==================================" -ForegroundColor DarkRed
 }
