@@ -35,7 +35,6 @@ if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 5) {
     Write-Host ""
     Write-Host (CenterText "Mensagem" $width) -ForegroundColor Yellow
     Write-Host (CenterText $commitMessage $width) -ForegroundColor White
-    Write-Host ""
     Write-Host ("=" * $width) -ForegroundColor DarkCyan
     }
 else {
