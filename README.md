@@ -147,3 +147,11 @@ print("Author:", author.name if author else "None")
 ```
 
 So in this example we user a basic query to find a "Author" in the Post Table.
+
+## Changelog ##
+
+For a complete list of changes and updates, see the [CHANGELOG](CHANGELOG.md) file.
+
+## Roadmap ##
+
+For a complete list of future updates and how you can help, see [ROADMAP](ROADMAP.md) and [CONTRIBUTING](CONTRIBUTING.md) files.
