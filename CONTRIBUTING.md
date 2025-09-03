@@ -1,6 +1,6 @@
-# Contributing to JsonLite #
+# Contributing to FastJson-db #
 
-Thank you for considering contributing to jsonlite! We welcome contributions of all kinds, including bug fixes, new features, documentation improvements, and examples.
+Thank you for considering contributing to FastJson-db! We welcome contributions of all kinds, including bug fixes, new features, documentation improvements, and examples.
 
 ## How to Contribute ##
 
