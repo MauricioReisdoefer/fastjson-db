@@ -1,15 +1,39 @@
-# JsonLite - Objective and Roadmap #
+# FastJson-db - Objective and Roadmap #
 
 ## Mission ##
 
-jsonlite aims to provide a lightweight JSON-based database for Python projects. It is designed for small projects, prototypes, and educational purposes, where using SQLite or other relational databases might be overkill.
+FastJson-db aims to provide a lightweight JSON-based database for Python projects. It is designed for small projects, prototypes, and educational purposes, where using SQLite or other relational databases might be overkill.
 
-## Current Goals (v1.0) ##
+## Current Goals (v1.0.0) ##
 
-- Simple CRUD operations: insert, get, update, delete
-- Automatic unique IDs for records
-- Human-readable JSON file
-- Basic filtering by key/value
+These are the adjustments we aim before oficial 1.0.0 release (leaving beta and maintaining more stable strucutre).
+
+### API Improvements ###
+
+- Simplify and unify table registration (TABLE_REGISTRY)
+- Better error messages for missing fields or wrong types
+- Cleaner integration with JsonModel subclasses
+
+### File Handling & Backend ###
+
+- Ensure safe read/write operations (atomic writes)
+
+### Query Enhancements ###
+
+- Support for complex queries (AND, OR, NOT logic)
+- Ability to chain queries (e.g., filter().exclude().order_by())
+
+### Documentation & Examples ###
+
+- Expand README with clear examples for JsonQuerier and ForeignKey
+- Provide a “cheat sheet” for common operations
+- Include migration guide from beta to stable
+
+### Testing & Stability ###
+
+- Full unit tests for all operations
+- Tests for edge cases (missing keys, empty tables, invalid foreign keys)
+- Benchmark basic CRUD and query performance
 
 ## Philosophy ##
 
