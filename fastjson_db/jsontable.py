@@ -4,8 +4,9 @@ except ImportError:
     import json as json_engine
 
 import os
-from dataclasses import asdict, is_dataclass
+from dataclasses import asdict, is_dataclass, fields
 from typing import Any, List, Type, TypeVar, Dict
+from .errors.model_table_errors import NotDataclassModelError, InvalidModel
 
 from fastjson_db.model import JsonModel
 T = TypeVar("T", bound="JsonModel")
@@ -24,13 +25,19 @@ class JsonTable:
             model_cls (Type[T]): The dataclass that this table will accept.
 
         Raises:
-            ValueError: If `model_cls` is not a dataclass.
+            NotDataclassModelError: If `model_cls` is not a dataclass.
         """
         self.path = path
         self.model_cls = model_cls
-
+        
         if not is_dataclass(model_cls):
-            raise ValueError("model_cls must be a dataclass")
+            raise NotDataclassModelError("model_cls must be a dataclass")
+                
+        if not issubclass(model_cls, JsonModel):
+            raise InvalidModel("model_cls must inherit from JsonModel")
+        
+        if "_id" not in model_cls.__annotations__:
+            raise InvalidModel("model_cls must define an _id field explicitly")
 
         self._data_cache: List[Dict[str, Any]] = []
         self._loaded = False
@@ -84,10 +91,10 @@ class JsonTable:
             int: The `_id` assigned to the inserted object.
 
         Raises:
-            TypeError: If the object is not an instance of the table's dataclass.
+            InvalidModel: If the object is not an instance of the table's dataclass.
         """
         if not isinstance(obj, self.model_cls):
-            raise TypeError(f"Object must be of type {self.model_cls.__name__}")
+            raise InvalidModel(f"Object must be of type {self.model_cls.__name__}")
 
         record = asdict(obj)
         record["_id"] = len(self._data_cache) + 1
@@ -171,10 +178,10 @@ class JsonTable:
             bool: True if the record was updated, False otherwise.
 
         Raises:
-            TypeError: If `new_obj` is not an instance of the table's dataclass.
+            InvalidModel: If `new_obj` is not an instance of the table's dataclass.
         """
         if not isinstance(new_obj, self.model_cls):
-            raise TypeError(f"Object must be of type {self.model_cls.__name__}")
+            raise InvalidModel(f"Object must be of type {self.model_cls.__name__}")
 
         for index, record in enumerate(self._data_cache):
             if record["_id"] == _id:
@@ -195,7 +202,7 @@ class JsonTable:
             int: Number of records updated.
 
         Raises:
-            TypeError: If any object in `updates` is not an instance of the table's dataclass.
+            InvalidModel: If any object in `updates` is not an instance of the table's dataclass.
         """
         count = 0
         for index, record in enumerate(self._data_cache):
@@ -203,7 +210,7 @@ class JsonTable:
             if _id in updates:
                 new_obj = updates[_id]
                 if not isinstance(new_obj, self.model_cls):
-                    raise TypeError(f"Object must be of type {self.model_cls.__name__}")
+                    raise InvalidModel(f"Object must be of type {self.model_cls.__name__}")
                 updated_record = asdict(new_obj)
                 updated_record["_id"] = _id
                 self._data_cache[index] = updated_record
