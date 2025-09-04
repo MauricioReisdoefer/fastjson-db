@@ -59,6 +59,10 @@ Both need improvements in serialization
 - Object (dict<T, T>)
 - Text
 
+### Load Cache Improvement ###
+
+Allow it to load empty tables.
+
 ## Philosophy ##
 
 - Keep it lightweight and simple

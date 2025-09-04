@@ -49,9 +49,13 @@ class JsonTable:
 
     def _load_cache(self):
         """Load the JSON file into the in-memory cache."""
+        if not os.path.exists(self.path) or os.path.getsize(self.path) == 0:
+            self._data_cache = []
+            self.flush()
+            return
+
         with open(self.path, "rb") as file:
             self._data_cache = json_engine.loads(file.read())
-        self._loaded = True
 
     def load(self) -> List[Dict[str, Any]]:
         """
