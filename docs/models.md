@@ -27,6 +27,7 @@ Currently, in version [0.3.2], the FastJson-db supports the following variable t
 - Dictionary (`dict`)
 - Null (`type(None)`)
 - ForeignKey\[Type] (`ForeignKey(Type)`)
+- Hashed (`Hashed`)
 
 ## Creating a Basic Model
 

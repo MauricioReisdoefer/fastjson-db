@@ -33,10 +33,6 @@ These are the adjustments we aim before oficial 1.0.0 release (leaving beta and 
 - Tests for edge cases (missing keys, empty tables, invalid foreign keys)
 - Benchmark basic CRUD and query performance
 
-### Hashing System ###
-
-- Make a built-in hashing system to facilitate usage of hash passwords
-
 ### Unique type fields ###
 
 - Making possible creating unique fields

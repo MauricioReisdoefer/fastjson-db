@@ -54,10 +54,17 @@ Removing `"_table_"` field from JsonTable insert. It could may cause many errors
 - Deserialization now supports fields annotated with `Optional[T]` or `T | None`. (As in the ROADMAP)
 - Improved compatibility with Python 3.10+ type hint syntax.
 
-### Expected to Next Update [0.3.3] ###
-
-Added support for using `@dataclass` objects for serialization within JsonTables.
-
 ### IMPORTANT ###
 
 This might break some codes if not being used properly.
+
+## [0.3.3] - 2025-09-05 ##
+
+### Added ###
+
+- Added new datatype "Hashed", a wrapper to facilitate `Werkzeug.security` usage
+- Serialization and Deserialization of `Hashed` type
+
+### Expected to Next Update [0.3.4] ###
+
+Added support for using `@dataclass` objects for serialization within JsonTables.

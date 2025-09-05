@@ -13,7 +13,7 @@ A lightweight JSON-based database for Python.
 
 ## Installation ##
 
-The currently newest version is [0.3.2].
+The currently newest version is [0.3.3].
 
 ```bash
 pip install fastjson-db

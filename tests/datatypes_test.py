@@ -3,6 +3,7 @@ import datetime
 import decimal
 import pytest
 from fastjson_db.datatypes.serializer import serialize_value, deserialize_value
+from fastjson_db.datatypes.hashed import Hashed
 
 def test_datetime():
     original = datetime.datetime(2025, 9, 4, 21, 30, 0)
@@ -39,3 +40,10 @@ def test_text():
     serialized = serialize_value(original)
     deserialized = deserialize_value(serialized, str)
     assert deserialized == original
+
+def test_hashed():
+    original = Hashed("password", False)
+    serialized = serialize_value(original)
+    deserialized = deserialize_value(serialized, Hashed)
+    assert str(deserialized) == str(original)
+    assert deserialized.check("password")
