@@ -59,8 +59,12 @@ class JsonTable:
         if not isinstance(obj, self.model_cls):
             raise InvalidModel(f"Object must be of type {self.model_cls.__name__}")
 
-        # SERIALIZAÇÃO automática
-        record = {f.name: serialize_value(getattr(obj, f.name)) for f in fields(obj)}
+        record = {
+            f.name: serialize_value(getattr(obj, f.name))
+            for f in fields(obj)
+            if f.name != "_table"
+        }
+
         record["_id"] = len(self._data_cache) + 1
         self._data_cache.append(record)
         obj._id = record["_id"]
