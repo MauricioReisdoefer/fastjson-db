@@ -18,3 +18,23 @@ All changes from 0.2.1 version or above will be documented here.
 ### Changed ###
 
 - Improved feedback when reconstructing models from JSON.
+
+## [0.3.0] - 2025-09-04 ##
+
+### Added ###
+
+- Added the possibility to add other datatypes with Serializers
+- New serializable types:
+- - Generic Lists
+- - Datatime
+- - Date
+- - Decimal
+- - Generic Dicts
+
+### Observation ###
+
+This new version does not break the last version, only adds a new feature. You can upgrade without any problem.
+
+### Expected to Next Update [0.3.1] ###
+
+Added support for using `@dataclass` objects for serialization within JsonTables.
