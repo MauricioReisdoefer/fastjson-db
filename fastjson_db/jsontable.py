@@ -4,38 +4,24 @@ except ImportError:
     import json as json_engine
 
 import os
-from dataclasses import asdict, is_dataclass, fields
+from dataclasses import is_dataclass, fields
 from typing import Any, List, Type, TypeVar, Dict
+
 from .errors.model_table_errors import NotDataclassModelError, InvalidModel
-
+from .datatypes.serializer import serialize_value, deserialize_value
 from fastjson_db.model import JsonModel
+
 T = TypeVar("T", bound="JsonModel")
+
 class JsonTable:
-    """
-    JsonTable works with dataclasses, ensuring that only objects of the correct type can be inserted.
-    Each instance represents a "table" stored as a JSON file.
-    """
-
     def __init__(self, path: str, model_cls: Type[T]):
-        """
-        Initializes the table for a specific dataclass type.
-
-        Args:
-            path (str): Path to the JSON file representing the table.
-            model_cls (Type[T]): The dataclass that this table will accept.
-
-        Raises:
-            NotDataclassModelError: If `model_cls` is not a dataclass.
-        """
         self.path = path
         self.model_cls = model_cls
-        
+
         if not is_dataclass(model_cls):
             raise NotDataclassModelError("model_cls must be a dataclass")
-                
         if not issubclass(model_cls, JsonModel):
             raise InvalidModel("model_cls must inherit from JsonModel")
-        
         if "_id" not in model_cls.__annotations__:
             raise InvalidModel("model_cls must define an _id field explicitly")
 
@@ -48,175 +34,91 @@ class JsonTable:
             self.save([])
 
     def _load_cache(self):
-        """Load the JSON file into the in-memory cache."""
         if not os.path.exists(self.path) or os.path.getsize(self.path) == 0:
             self._data_cache = []
             self.flush()
             return
-
         with open(self.path, "rb") as file:
             self._data_cache = json_engine.loads(file.read())
 
     def load(self) -> List[Dict[str, Any]]:
-        """
-        Loads all records from the JSON file as a list of dictionaries.
-
-        Returns:
-            List[Dict[str, Any]]: List of all records stored in the table.
-        """
         if not self._loaded:
             self._load_cache()
         return self._data_cache
 
     def save(self, data: List[Dict[str, Any]] = None):
-        """
-        Saves a list of records (dictionaries) to the JSON file.
-
-        Args:
-            data (List[Dict[str, Any]], optional): Records to save. Defaults to None.
-        """
         if data is not None:
             self._data_cache = data
         with open(self.path, "wb") as file:
             file.write(json_engine.dumps(self._data_cache))
 
     def flush(self):
-        """Writes the current in-memory cache to disk."""
         self.save()
 
     def insert(self, obj: T) -> int:
-        """
-        Inserts a single dataclass object into the table and assigns a unique `_id`.
-
-        Args:
-            obj (T): The dataclass object to insert.
-
-        Returns:
-            int: The `_id` assigned to the inserted object.
-
-        Raises:
-            InvalidModel: If the object is not an instance of the table's dataclass.
-        """
         if not isinstance(obj, self.model_cls):
             raise InvalidModel(f"Object must be of type {self.model_cls.__name__}")
 
-        record = asdict(obj)
+        # SERIALIZAÇÃO automática
+        record = {f.name: serialize_value(getattr(obj, f.name)) for f in fields(obj)}
         record["_id"] = len(self._data_cache) + 1
         self._data_cache.append(record)
         obj._id = record["_id"]
         return obj._id
 
     def get_all(self) -> List[T]:
-        """
-        Retrieves all records from the table as dataclass objects.
-
-        Returns:
-            List[T]: List of dataclass instances representing all records.
-        """
-        clean_records = [
-            {k: v for k, v in record.items() if k != "_table"}
-            for record in self._data_cache
-        ]
-        
-        return [self.model_cls(**record) for record in clean_records]
+        objs = []
+        for record in self._data_cache:
+            clean_record = {k: v for k, v in record.items() if k != "_table"}
+            # DESSERIALIZAÇÃO automática
+            for f in fields(self.model_cls):
+                if f.name in clean_record:
+                    clean_record[f.name] = deserialize_value(clean_record[f.name], f.type)
+            objs.append(self.model_cls(**clean_record))
+        return objs
 
     def get_by(self, key: str, value: Any) -> List[T]:
-        """
-        Retrieves records where a given field matches a specific value.
-
-        Args:
-            key (str): The field name to search by.
-            value (Any): The value to match.
-
-        Returns:
-            List[T]: List of dataclass instances that match the condition.
-        """
-        clean_records = [
-            {k: v for k, v in record.items() if k != "_table"}
-            for record in self._data_cache
-            if record.get(key) == value
-        ]
-        
-        return [self.model_cls(**record) for record in clean_records if record.get(key) == value]
+        objs = []
+        for record in self._data_cache:
+            if record.get(key) == value:
+                clean_record = {k: v for k, v in record.items() if k != "_table"}
+                for f in fields(self.model_cls):
+                    if f.name in clean_record:
+                        clean_record[f.name] = deserialize_value(clean_record[f.name], f.type)
+                objs.append(self.model_cls(**clean_record))
+        return objs
 
     def delete(self, _id: int) -> bool:
-        """
-        Deletes a record by its `_id`.
-
-        Args:
-            _id (int): The unique ID of the record to delete.
-
-        Returns:
-            bool: True if the record was deleted, False otherwise.
-        """
-        new_data = [record for record in self._data_cache if record["_id"] != _id]
+        new_data = [r for r in self._data_cache if r["_id"] != _id]
         if len(new_data) != len(self._data_cache):
             self._data_cache = new_data
             return True
         return False
 
     def insert_many(self, objects: List[T]) -> List[int]:
-        """
-        Inserts multiple dataclass objects at once.
-
-        Args:
-            objs (List[T]): List of dataclass objects to insert.
-
-        Returns:
-            List[int]: List of `_id`s assigned to the inserted objects.
-        """
-        ids = []
-        for obj in objects:
-            ids.append(self.insert(obj))
-        return ids
+        return [self.insert(obj) for obj in objects]
 
     def update(self, _id: int, new_obj: T) -> bool:
-        """
-        Updates a single record identified by its `_id` using a new dataclass object.
-
-        Args:
-            _id (int): The unique ID of the record to update.
-            new_obj (T): A new dataclass object to replace the existing record.
-
-        Returns:
-            bool: True if the record was updated, False otherwise.
-
-        Raises:
-            InvalidModel: If `new_obj` is not an instance of the table's dataclass.
-        """
         if not isinstance(new_obj, self.model_cls):
             raise InvalidModel(f"Object must be of type {self.model_cls.__name__}")
-
-        for index, record in enumerate(self._data_cache):
+        for idx, record in enumerate(self._data_cache):
             if record["_id"] == _id:
-                updated_record = asdict(new_obj)
+                updated_record = {f.name: serialize_value(getattr(new_obj, f.name)) for f in fields(new_obj)}
                 updated_record["_id"] = _id
-                self._data_cache[index] = updated_record
+                self._data_cache[idx] = updated_record
                 return True
         return False
 
     def update_many(self, updates: Dict[int, T]) -> int:
-        """
-        Updates multiple records at once, using new dataclass objects.
-
-        Args:
-            updates (Dict[int, T]): Dictionary where keys are `_id`s and values are new dataclass objects to replace the existing records.
-
-        Returns:
-            int: Number of records updated.
-
-        Raises:
-            InvalidModel: If any object in `updates` is not an instance of the table's dataclass.
-        """
         count = 0
-        for index, record in enumerate(self._data_cache):
+        for idx, record in enumerate(self._data_cache):
             _id = record.get("_id")
             if _id in updates:
                 new_obj = updates[_id]
                 if not isinstance(new_obj, self.model_cls):
                     raise InvalidModel(f"Object must be of type {self.model_cls.__name__}")
-                updated_record = asdict(new_obj)
+                updated_record = {f.name: serialize_value(getattr(new_obj, f.name)) for f in fields(new_obj)}
                 updated_record["_id"] = _id
-                self._data_cache[index] = updated_record
+                self._data_cache[idx] = updated_record
                 count += 1
         return count
