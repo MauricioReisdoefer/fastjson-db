@@ -19,6 +19,8 @@ All changes from 0.2.1 version or above will be documented here.
 
 - Improved feedback when reconstructing models from JSON.
 
+---
+
 ## [0.3.0] - 2025-09-04 ##
 
 ### Added ###
@@ -35,12 +37,27 @@ All changes from 0.2.1 version or above will be documented here.
 
 This new version does not break the last version, only adds a new feature. You can upgrade without any problem.
 
+---
+
 ## [0.3.1] - 2025-09-04 ##
 
 ### Patch / Fixed ###
 
 Removing `"_table_"` field from JsonTable insert. It could may cause many errors in serialization.
 
-### Expected to Next Update [0.3.2] ###
+---
+
+## [0.3.2] - 2025-09-05 ##
+
+### Added ###
+
+- Deserialization now supports fields annotated with `Optional[T]` or `T | None`. (As in the ROADMAP)
+- Improved compatibility with Python 3.10+ type hint syntax.
+
+### Expected to Next Update [0.3.3] ###
 
 Added support for using `@dataclass` objects for serialization within JsonTables.
+
+### IMPORTANT ###
+
+This might break some codes if not being used properly.

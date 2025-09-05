@@ -10,8 +10,6 @@ These are the adjustments we aim before oficial 1.0.0 release (leaving beta and 
 
 ### API Improvements ###
 
-- Simplify and unify table registration (TABLE_REGISTRY)
-- Better error messages for missing fields or wrong types
 - Cleaner integration with JsonModel subclasses
 
 ### File Handling & Backend ###
@@ -43,25 +41,16 @@ These are the adjustments we aim before oficial 1.0.0 release (leaving beta and 
 
 - Import of ForeignKey is no defined in fastjson-db/__init__.py
 
-### Nullable and Unique type fields ###
+### Unique type fields ###
 
-- Making possible creating nullable fields
 - Making possible creating unique fields
 
 Both need improvements in serialization
 
 ### New Types ###
 
-- Date
-- DateTime
-- List[T]
-- DecimalPrecision
 - Object (dict<T, T>)
-- Text
-
-### Load Cache Improvement ###
-
-Allow it to load empty tables.
+- Dataclasses
 
 ## Philosophy ##
 
