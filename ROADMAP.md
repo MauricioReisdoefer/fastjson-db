@@ -37,10 +37,6 @@ These are the adjustments we aim before oficial 1.0.0 release (leaving beta and 
 
 - Make a built-in hashing system to facilitate usage of hash passwords
 
-### Correct ForeignKey Importation ###
-
-- Import of ForeignKey is no defined in fastjson-db/__init__.py
-
 ### Unique type fields ###
 
 - Making possible creating unique fields
@@ -49,7 +45,6 @@ Both need improvements in serialization
 
 ### New Types ###
 
-- Object (dict<T, T>)
 - Dataclasses
 
 ## Philosophy ##

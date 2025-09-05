@@ -4,6 +4,7 @@ import decimal
 from typing import Any, Type, Dict, Callable, get_origin, get_args, Union
 from fastjson_db.foreignkey import ForeignKey
 from fastjson_db.errors.datatype_error import DataTypeError
+from fastjson_db.datatypes.hashed import Hashed
 
 # Registry global de tipos
 SERIALIZERS: Dict[Type, Callable[[Any], Any]] = {}
@@ -46,6 +47,9 @@ DESERIALIZERS[type(None)] = lambda v: None
 
 SERIALIZERS[ForeignKey] = lambda fk: fk._id
 DESERIALIZERS[ForeignKey] = lambda v: ForeignKey(None, id=v)
+
+SERIALIZERS[Hashed] = lambda v: str(v)
+DESERIALIZERS[Hashed] = lambda v: Hashed(v, already_hashed=True)
 
 def serialize_value(value):
     t = type(value)
