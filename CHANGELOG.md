@@ -35,6 +35,12 @@ All changes from 0.2.1 version or above will be documented here.
 
 This new version does not break the last version, only adds a new feature. You can upgrade without any problem.
 
-### Expected to Next Update [0.3.1] ###
+## [0.3.1] - 2025-09-04 ##
+
+### Patch / Fixed ###
+
+Removing `"_table_"` field from JsonTable insert. It could may cause many errors in serialization.
+
+### Expected to Next Update [0.3.2] ###
 
 Added support for using `@dataclass` objects for serialization within JsonTables.
