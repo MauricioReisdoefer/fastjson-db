@@ -58,6 +58,8 @@ Removing `"_table_"` field from JsonTable insert. It could may cause many errors
 
 This might break some codes if not being used properly.
 
+---
+
 ## [0.3.3] - 2025-09-05 ##
 
 ### Added ###
@@ -65,15 +67,24 @@ This might break some codes if not being used properly.
 - Added new datatype "Hashed", a wrapper to facilitate `Werkzeug.security` usage
 - Serialization and Deserialization of `Hashed` type
 
+---
+
 ## [0.3.4] - 2025-09-06 ##
 
 ### Patch ###
 
 - Added new atomicity system to JsonTables
 
-### Expected to Next Update [0.4.0] ###
+---
+
+## [0.3.5] - 2025-09-06 ##
+
+### Added ###
+
+- Added new Unique type, so it doesn't permit non Unique entrys in determined fields.
+
+### ### Expected to Next Update [0.4.0] ###
 
 - Adding support for using `@dataclass` objects for serialization within JsonTables.
 - Adding harsher datatype validation to ensure stronger guarantees when serializing and deserializing models.
 - General performance improvements in serialization.
-- Unique type fields

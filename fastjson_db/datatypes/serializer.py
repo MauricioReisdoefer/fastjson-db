@@ -5,6 +5,7 @@ from typing import Any, Type, Dict, Callable, get_origin, get_args, Union
 from fastjson_db.foreignkey import ForeignKey
 from fastjson_db.errors.datatype_error import DataTypeError
 from fastjson_db.datatypes.hashed import Hashed
+from fastjson_db.datatypes.unique import Unique
 
 # Registry global de tipos
 SERIALIZERS: Dict[Type, Callable[[Any], Any]] = {}
@@ -51,6 +52,9 @@ DESERIALIZERS[ForeignKey] = lambda v: ForeignKey(None, id=v)
 SERIALIZERS[Hashed] = lambda v: str(v)
 DESERIALIZERS[Hashed] = lambda v: Hashed(v, already_hashed=True)
 
+SERIALIZERS[Unique] = lambda v : v.value
+DESERIALIZERS[Unique] = lambda v : Unique(v)
+
 def serialize_value(value):
     t = type(value)
     if t in SERIALIZERS:
@@ -69,7 +73,11 @@ def deserialize_value(value, target_type=None):
                 if arg in DESERIALIZERS:
                     return DESERIALIZERS[arg](value)
             return value
-        if target_type in DESERIALIZERS:
-            return DESERIALIZERS[target_type](value)
+
+        # Unique[str] or Unique[int] will be treated like -> Unique
+        origin = get_origin(target_type) or target_type
+        if origin in DESERIALIZERS:
+            return DESERIALIZERS[origin](value)
+
         raise DataTypeError(f"Unsupported datatype for deserialization: {target_type}")
     return value

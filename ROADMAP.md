@@ -33,12 +33,6 @@ These are the adjustments we aim before oficial 1.0.0 release (leaving beta and 
 - Tests for edge cases (missing keys, empty tables, invalid foreign keys)
 - Benchmark basic CRUD and query performance
 
-### Unique type fields ###
-
-- Making possible creating unique fields
-
-Both need improvements in serialization
-
 ### New Types ###
 
 - Dataclasses

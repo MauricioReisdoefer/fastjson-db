@@ -84,6 +84,15 @@ class JsonTable:
             if f.name != "_table"
         }
         
+        # Verificação "pré-inserção"
+        for f in fields(self.model_cls):
+            if f.name in self.uniquers:
+                value = getattr(obj, f.name)
+                if isinstance(value, Unique):
+                    value = value.value
+                if value in self.uniquers[f.name]._values:
+                    raise ValueError(f"Unique constraint violated: {value}")
+                
         for f in fields(self.model_cls):
             if f.name in self.uniquers:
                 value = getattr(obj, f.name)
@@ -119,11 +128,21 @@ class JsonTable:
         return objs
 
     def delete(self, _id: int) -> bool:
-        new_data = [r for r in self._data_cache if r["_id"] != _id]
-        if len(new_data) != len(self._data_cache):
-            self._data_cache = new_data
-            return True
-        return False
+        record_to_delete = next((r for r in self._data_cache if r["_id"] == _id), None)
+        if not record_to_delete:
+            return False
+
+        # Removing from JsonUniquer
+        for f in fields(self.model_cls):
+            if f.name in self.uniquers:
+                val = record_to_delete.get(f.name)
+                if isinstance(val, str) and get_origin(f.type) is Unique:
+                    self.uniquers[f.name].remove(val)
+                elif isinstance(val, Unique):
+                    self.uniquers[f.name].remove(val.value)
+
+        self._data_cache = [r for r in self._data_cache if r["_id"] != _id]
+        return True
 
     def insert_many(self, objects: List[T]) -> List[int]:
         return [self.insert(obj) for obj in objects]
