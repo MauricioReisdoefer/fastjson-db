@@ -65,6 +65,15 @@ This might break some codes if not being used properly.
 - Added new datatype "Hashed", a wrapper to facilitate `Werkzeug.security` usage
 - Serialization and Deserialization of `Hashed` type
 
-### Expected to Next Update [0.3.4] ###
+## [0.3.4] - 2025-09-06 ##
 
-Added support for using `@dataclass` objects for serialization within JsonTables.
+### Patch ###
+
+- Added new atomicity system to JsonTables
+
+### Expected to Next Update [0.4.0] ###
+
+- Adding support for using `@dataclass` objects for serialization within JsonTables.
+- Adding harsher datatype validation to ensure stronger guarantees when serializing and deserializing models.
+- General performance improvements in serialization.
+- Unique type fields
