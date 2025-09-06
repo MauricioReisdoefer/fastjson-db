@@ -11,6 +11,8 @@ from .errors.model_table_errors import NotDataclassModelError, InvalidModel
 from .datatypes.serializer import serialize_value, deserialize_value
 from fastjson_db.model import JsonModel
 
+import tempfile
+
 T = TypeVar("T", bound="JsonModel")
 
 class JsonTable:
@@ -49,8 +51,17 @@ class JsonTable:
     def save(self, data: List[Dict[str, Any]] = None):
         if data is not None:
             self._data_cache = data
-        with open(self.path, "wb") as file:
-            file.write(json_engine.dumps(self._data_cache))
+        temp_file_fd, temp_file_path = tempfile.mkstemp(dir=os.path.dirname(self.path), suffix=".tmp")
+
+        try:
+            with os.fdopen(temp_file_fd, "wb") as temp_file:
+                temp_file.write(json_engine.dumps(self._data_cache))
+                
+            os.replace(temp_file_path, self.path)
+        except Exception as e:
+            if os.path.exists(temp_file_path):
+                os.remove(temp_file_path)
+            raise e
 
     def flush(self):
         self.save()
