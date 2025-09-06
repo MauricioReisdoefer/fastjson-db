@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from fastjson_db.model import JsonModel, TABLE_REGISTRY
 from fastjson_db.jsontable import JsonTable
 from fastjson_db.foreignkey import ForeignKey
+from fastjson_db.jsonuniquer import JsonUniquer
 
 
 # -------- MODELOS --------

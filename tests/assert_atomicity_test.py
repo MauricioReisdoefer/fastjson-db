@@ -3,6 +3,7 @@ import pytest
 from dataclasses import dataclass
 from fastjson_db.model import JsonModel
 from fastjson_db.jsontable import JsonTable
+from fastjson_db.jsonuniquer import JsonUniquer
 
 @dataclass
 class Dummy(JsonModel):

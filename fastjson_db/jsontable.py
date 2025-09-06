@@ -9,7 +9,10 @@ from typing import Any, List, Type, TypeVar, Dict
 
 from .errors.model_table_errors import NotDataclassModelError, InvalidModel
 from .datatypes.serializer import serialize_value, deserialize_value
+from .datatypes.unique import Unique
+from .jsonuniquer import JsonUniquer
 from fastjson_db.model import JsonModel
+from typing import get_origin
 
 import tempfile
 
@@ -19,13 +22,18 @@ class JsonTable:
     def __init__(self, path: str, model_cls: Type[T]):
         self.path = path
         self.model_cls = model_cls
-
+        
         if not is_dataclass(model_cls):
             raise NotDataclassModelError("model_cls must be a dataclass")
         if not issubclass(model_cls, JsonModel):
             raise InvalidModel("model_cls must inherit from JsonModel")
         if "_id" not in model_cls.__annotations__:
             raise InvalidModel("model_cls must define an _id field explicitly")
+        
+        self.uniquers = {}
+        for f in fields(model_cls):
+            if get_origin(f.type) is Unique:
+                self.uniquers[f.name] = JsonUniquer(path, model_cls.__name__, f.name)
 
         self._data_cache: List[Dict[str, Any]] = []
         self._loaded = False
@@ -75,6 +83,13 @@ class JsonTable:
             for f in fields(obj)
             if f.name != "_table"
         }
+        
+        for f in fields(self.model_cls):
+            if f.name in self.uniquers:
+                value = getattr(obj, f.name)
+                if isinstance(value, Unique):
+                    value = value.value
+                self.uniquers[f.name].add(value)
 
         record["_id"] = len(self._data_cache) + 1
         self._data_cache.append(record)

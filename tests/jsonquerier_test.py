@@ -4,6 +4,7 @@ import pytest
 from dataclasses import dataclass
 from fastjson_db import JsonModel, JsonTable
 from fastjson_db.jsonquerier import JsonQuerier
+from fastjson_db.jsonuniquer import JsonUniquer
 
 
 # ---- Modelo de exemplo ----
