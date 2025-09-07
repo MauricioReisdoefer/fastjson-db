@@ -2,6 +2,8 @@
 
 `JsonTables` are the primary mechanism through which `FastJson-DB` organizes data. Although it operates as a NoSQL database, it adopts a familiar "table" structure to streamline data organization and access. Each `JsonTable` serves as a logical container for JSON documents that share a common structure or purpose, akin to collections in other NoSQL databases or traditional tables in relational databases.
 
+See more about the internal functioning of `JsonTables` here [JsonTables](jsontables_internals.md)
+
 ## Features ##
 
 * **Indexing**: While not a relational database, `FastJson-DB` supports indexing of fields within `JsonTables` to optimize query performance. This feature is crucial for efficient data retrieval, especially with large datasets.
@@ -60,8 +62,6 @@ user_table.insert(new_user)
 To persist the cached data to the file, use the `.flush()` method of the `JsonTable`. It is generally inefficient to write every single insertion directly to the `.json` file. Therefore, the table first accumulates changes in its cache and only writes them to the file when `.flush()` is invoked.
 
 **Note**: For optimal performance, invoke `.flush()` only when necessary, such as after a batch of insertions or updates, or when you need to ensure data persistence.
-
-See more about the internal functioning of `JsonTables` here [JsonTables](jsontables_internals.md)
 
 ```python
 # Parameters:
