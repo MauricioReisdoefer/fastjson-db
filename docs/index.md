@@ -5,3 +5,4 @@ Welcome to the official documentation of **FastJson-db**, a lightweight JSON-bas
 ## Contents ##
 
 - [Models](models.md)
+- [Tables](tables.md)
