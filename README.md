@@ -1,5 +1,7 @@
 # FastJson-db #
 
+![logo](FastJsonDB_logo.png)
+
 A lightweight JSON-based database for Python.  
 `fastjson-db` allows you to store, retrieve, and manipulate data in a simple JSON file with a minimal and easy-to-use API.
 

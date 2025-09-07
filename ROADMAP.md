@@ -1,7 +1,5 @@
 # FastJson-db - Objective and Roadmap #
 
-![logo](FastJsonDB_logo.png)
-
 ## Mission ##
 
 FastJson-db aims to provide a lightweight JSON-based database for Python projects. It is designed for small projects, prototypes, and educational purposes, where using SQLite or other relational databases might be overkill.
