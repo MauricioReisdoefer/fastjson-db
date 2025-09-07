@@ -21,6 +21,9 @@ class JsonApp():
         """Load .log operations in the .json tables"""
         pass
     
+    def _discoverTables(self):
+        """Discover created .json files and assert they are registred in _TABLE_REGISTRY"""
+    
     def registerTable(self):
         """Add a new tabble to the _tables list and _tables registry"""
         pass
