@@ -6,3 +6,4 @@ Welcome to the official documentation of **FastJson-db**, a lightweight JSON-bas
 
 - [Models](models.md)
 - [Tables](tables.md)
+- [Querier](querier.md)
