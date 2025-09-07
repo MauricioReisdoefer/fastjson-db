@@ -1,41 +1,29 @@
 # FastJson-db - Objective and Roadmap #
 
+![logo](FastJsonDB_logo.png)
+
 ## Mission ##
 
 FastJson-db aims to provide a lightweight JSON-based database for Python projects. It is designed for small projects, prototypes, and educational purposes, where using SQLite or other relational databases might be overkill.
 
-## Current Goals (v1.0.0) ##
+## Current Goals (v0.4.0) ##
 
-These are the adjustments we aim before oficial 1.0.0 release (leaving beta and maintaining more stable strucutre).
+These are the adjustments we aim before oficial 0.4.0 release.
 
-### API Improvements ###
+### JsonApp ###
 
-- Cleaner integration with JsonModel subclasses
+- Create a JsonApp
+- Hide .flush() functionality
+- Atomicity with .log append
 
-### File Handling & Backend ###
+### Simplify ###
 
-- Ensure safe read/write operations (atomic writes)
+- Simplify what's not simple and what's redundant.
 
 ### Query Enhancements ###
 
 - Support for complex queries (AND, OR, NOT logic)
 - Ability to chain queries (e.g., filter().exclude().order_by())
-
-### Documentation & Examples ###
-
-- Expand README with clear examples for JsonQuerier and ForeignKey
-- Provide a “cheat sheet” for common operations
-- Include migration guide from beta to stable
-
-### Testing & Stability ###
-
-- Full unit tests for all operations
-- Tests for edge cases (missing keys, empty tables, invalid foreign keys)
-- Benchmark basic CRUD and query performance
-
-### New Types ###
-
-- Dataclasses
 
 ## Philosophy ##
 
