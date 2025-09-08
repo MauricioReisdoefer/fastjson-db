@@ -1,3 +1,3 @@
 from .types import Field
-
-__all__ = ["Field"]
+from .core import JsonModel
+__all__ = ["Field", "JsonModel"]
