@@ -21,9 +21,9 @@ FastJson-DB is meant to be a easy to use, fast and NoSQL database. It'll have fe
 
 ## ⚙️ Core Concepts ##
 
-- [JsonModel](docs/core/jsonmodel.md)  
-- [Fields](docs/core/fields.md)  
-- [JsonTable](docs/core/jsontable.md)  
+- [JsonModel](core/jsonmodel.md)  
+- [Fields](core/fields.md)  
+- [JsonTable](core/jsontable.md)  
 
 ---
 

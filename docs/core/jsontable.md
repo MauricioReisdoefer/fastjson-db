@@ -4,7 +4,7 @@
 
 JsonTables are the "engine" of a single Table in the database. So, each of them should control only ONE Table in the entire database.
 
-They need also to receive a `JsonModel` to verify the pattern of the .json table. See more about JsonModels here: [JsonModels](docs/jsonmodel.md).
+They need also to receive a `JsonModel` to verify the pattern of the .json table. See more about JsonModels here: [JsonModels](jsonmodel.md).
 
 ## How to Use JsonTables ##
 

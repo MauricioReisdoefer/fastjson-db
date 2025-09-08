@@ -28,7 +28,7 @@ class User(JsonModel):
 
 ### Creating fields ###
 
-You can create your Model fields with the Field class. Find more in [Fields](docs/fields.md)
+You can create your Model fields with the Field class. Find more in [Fields](fields.md)
 
 ```py
 from fastjson_db import JsonModel, Field
