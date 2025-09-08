@@ -7,4 +7,6 @@ class User(JsonModel):
 new_table = JsonTable(User, "users.json")
 new_table._load_cache()
 
+new_user = User(id=5, username="username")
+new_table.insert(new_user)
 print(new_table.cache)
