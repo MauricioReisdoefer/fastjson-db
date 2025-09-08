@@ -1,6 +1,6 @@
 from fastjson_db.errors import FieldDatatypeError
 
-VALID_RETURN_TYPES = (int, str, list, dict)
+VALID_RETURN_TYPES = (int, str, list, dict, float)
 
 def check_return_type(func, attr_name):
     """Checks if validator, serializer and deserializer are valid"""

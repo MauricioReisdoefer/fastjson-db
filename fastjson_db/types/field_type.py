@@ -56,7 +56,7 @@ class Field():
                 )
         
         origin = get_origin(self.type)
-        if self.type in [int, str] or origin in [list, dict]:
+        if self.type in [int, str, float] or origin in [list, dict]:
             atributes = ['validator']
         else:
             # For native types, they are not, and validator is optional
