@@ -31,3 +31,31 @@ new_table = JsonTable(User, "users.json")
 ```
 
 This creates a JsonTable that manipulates the file "users.json", and use the User model as a pattern to insertion and manipulation of the database.
+
+### Inserting an Entry ###
+
+FastJson-DB works directly in cache. And with the WAL and JsonDatabase it will insert first in a .log and then in the .json. This insert inserts in the `JsonTable.cache`
+
+```py
+new_table.insert(User(id=0, username="New_User"))
+```
+
+### Updating an Entry ###
+
+The same as inserting. But now receiving the ID of the entrie to be changed and the new data.
+
+```py
+new_table.update(0, User(id=0, username="Changing Name"))
+```
+
+### Deleting an Entry ###
+
+The same as updating, but without new data. It receives an id only.
+
+```py
+new_table.remove(0)
+```
+
+### Queries ###
+
+Queries should be made with the JsonQuerier. Learn more in [JsonQuerier](jsonquerier.md)
