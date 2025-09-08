@@ -16,7 +16,7 @@ It abstracts away direct JSON file manipulation by providing a structured layer 
 
 ## Installation ##
 
-The currently newest version is [0.3.5].
+The currently newest version is [0.3.5]. (Without most of above features)
 
 ```bash
 pip install fastjson-db
