@@ -9,10 +9,11 @@ print("-/ FASTJSON-DB /-")
 class User(JsonModel):
     id = Field(field_name="id", type=int, primary_key=True, unique=True)
     username = Field(field_name="username", type=str)
+    balance = Field(field_name="balance", type=float)
 
 # ------------------ HELPER ------------------ #
 def create_users(n: int):
-    return [User(id=i, username=f"User{i}") for i in range(n)]
+    return [User(id=i, username=f"User{i}", balance=randint(0, 10000)/100) for i in range(n)]
 
 # ------------------ BENCHMARK ------------------ #
 def benchmark(n):
@@ -25,23 +26,27 @@ def benchmark(n):
         table.insert(u)
 
     querier = JsonQuerier(table)
+    querier._load_cache()  # Construir índices uma vez
 
     # Escolhe um ID aleatório
     random_id = randint(0, n - 1)
 
     # ------------------ Test .first() ------------------ #
+    querier._filters.clear()
     start = time.perf_counter()
     user_first = querier.filter(id=random_id).first()
     end = time.perf_counter()
     print(f"Query first() by id={random_id}: {end - start:.6f} seconds")
 
     # ------------------ Test .get() ------------------ #
+    querier._filters.clear()
     start = time.perf_counter()
     user_list = querier.filter(id=random_id).get()
     end = time.perf_counter()
     print(f"Query get() by id={random_id}: {end - start:.6f} seconds")
 
     # ------------------ Test .count() ------------------ #
+    querier._filters.clear()
     start = time.perf_counter()
     count = querier.count(id=random_id)
     end = time.perf_counter()
@@ -51,14 +56,13 @@ def benchmark(n):
 for size in [1000, 10_000, 100_000]:
     benchmark(size)
 
+
 print("\n\n-/ SQLITE /-")
 
 import sqlite3
-import time
-from random import randint
 
 # ------------------ HELPER ------------------ #
-def create_users(n):
+def create_users_sqlite(n):
     return [(i, f"User{i}") for i in range(n)]
 
 # ------------------ BENCHMARK ------------------ #
@@ -72,7 +76,7 @@ def benchmark_sqlite(n):
     c.execute("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)")
     
     # Insere dados
-    users = create_users(n)
+    users = create_users_sqlite(n)
     start_insert = time.perf_counter()
     c.executemany("INSERT INTO users (id, username) VALUES (?, ?)", users)
     conn.commit()
@@ -89,7 +93,7 @@ def benchmark_sqlite(n):
     end = time.perf_counter()
     print(f"Query first() by id={random_id}: {end - start:.6f} seconds")
     
-    # Test SELECT get (same as first here, because id is PK)
+    # Test SELECT get
     start = time.perf_counter()
     c.execute("SELECT * FROM users WHERE id=?", (random_id,))
     rows = c.fetchall()
